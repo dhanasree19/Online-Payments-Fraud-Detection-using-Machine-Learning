@@ -2,45 +2,57 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# Load trained model
+# Load model
 model = joblib.load("random_forest_model.pkl")
 
-# Page config
+
+# Page Config
 st.set_page_config(
-    page_title="Fraud Detection App",
+    page_title="Fraud Detection",
     page_icon="💳",
     layout="centered"
 )
 
-# Title
-st.markdown("<h1 style='text-align: center;'>💳 Online Payment Fraud Detection</h1>", unsafe_allow_html=True)
-st.markdown("<hr>", unsafe_allow_html=True)
+
+# Session state for page navigation
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
+
+if "prediction" not in st.session_state:
+    st.session_state.prediction = None
 
 
-# Sidebar
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Predict", "About"])
+# ================== HOME PAGE ==================
+if st.session_state.page == "Home":
 
+    st.markdown("<h1 style='text-align:center;'>💳 Online Payment Fraud Detection</h1>",
+                unsafe_allow_html=True)
 
-# ================= HOME PAGE =================
-if page == "Home":
-
-    st.subheader("🏠 Welcome")
+    st.markdown("<hr>", unsafe_allow_html=True)
 
     st.write("""
-    This application predicts whether an online transaction is **Fraudulent or Safe**
-    using Machine Learning.
-    
-    👉 Go to **Predict Page** to check your transaction.
+    Welcome to the Fraud Detection System.
+
+    This application predicts whether a transaction is:
+
+    ✅ Safe  
+    ⚠️ Fraudulent
     """)
 
-    st.success("Deployed using Streamlit Cloud 🚀")
+    st.info("Click below to start prediction")
+
+    if st.button("🚀 Go to Predict"):
+        st.session_state.page = "Predict"
+        st.experimental_rerun()
 
 
-# ================= PREDICT PAGE =================
-elif page == "Predict":
+# ================== PREDICT PAGE ==================
+elif st.session_state.page == "Predict":
 
-    st.subheader("🔍 Enter Transaction Details")
+    st.markdown("<h2 style='text-align:center;'>🔍 Enter Transaction Details</h2>",
+                unsafe_allow_html=True)
+
+    st.markdown("<hr>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
 
@@ -54,7 +66,7 @@ elif page == "Predict":
         newOrg = st.number_input("New Balance (Sender)", min_value=0.0)
         oldDest = st.number_input("Old Balance (Receiver)", min_value=0.0)
         newDest = st.number_input("New Balance (Receiver)", min_value=0.0)
-        isFlaggedFraud = st.number_input("Is Flagged Fraud (0 or 1)", min_value=0.0, max_value=1.0)
+        isFlagged = st.number_input("Is Flagged Fraud (0 or 1)", min_value=0.0, max_value=1.0)
 
     st.markdown("")
 
@@ -63,33 +75,39 @@ elif page == "Predict":
         data = np.array([[step, type_t, amount,
                           oldOrg, newOrg,
                           oldDest, newDest,
-                          isFlaggedFraud]])
+                          isFlagged]])
 
-        prediction = model.predict(data)[0]
+        pred = model.predict(data)[0]
 
-        st.markdown("<hr>", unsafe_allow_html=True)
+        st.session_state.prediction = pred
+        st.session_state.page = "Result"
 
-        if prediction == 1:
-            st.error("⚠️ Fraudulent Transaction Detected!")
-        else:
-            st.success("✅ Safe Transaction")
+        st.experimental_rerun()
+
+    if st.button("⬅️ Back to Home"):
+        st.session_state.page = "Home"
+        st.experimental_rerun()
 
 
-# ================= ABOUT PAGE =================
-elif page == "About":
+# ================== RESULT PAGE ==================
+elif st.session_state.page == "Result":
 
-    st.subheader("📘 About Project")
+    st.markdown("<h2 style='text-align:center;'>📊 Prediction Result</h2>",
+                unsafe_allow_html=True)
 
-    st.write("""
-    **Project Name:** Online Payment Fraud Detection  
-    
-    **Technologies Used:**
-    - Python
-    - Scikit-learn
-    - Streamlit
-    
-    **Purpose:**
-    To detect fraudulent online transactions using Machine Learning.
-    """)
+    st.markdown("<hr>", unsafe_allow_html=True)
 
-    st.info("Created for Academic Project & Demo")
+    if st.session_state.prediction == 1:
+        st.error("⚠️ Fraudulent Transaction Detected!")
+    else:
+        st.success("✅ Safe Transaction")
+
+    st.markdown("")
+
+    if st.button("🔁 Predict Again"):
+        st.session_state.page = "Predict"
+        st.experimental_rerun()
+
+    if st.button("🏠 Back to Home"):
+        st.session_state.page = "Home"
+        st.experimental_rerun()
