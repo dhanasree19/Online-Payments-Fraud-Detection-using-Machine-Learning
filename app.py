@@ -2,112 +2,143 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# Load model
+
+# Load Model
 model = joblib.load("random_forest_model.pkl")
 
 
-# Page Config
+# Page Setup
 st.set_page_config(
-    page_title="Fraud Detection",
+    page_title="Online Payment Fraud Detection",
     page_icon="💳",
     layout="centered"
 )
 
 
-# Session state for page navigation
+# Session State
 if "page" not in st.session_state:
-    st.session_state.page = "Home"
+    st.session_state.page = "home"
 
-if "prediction" not in st.session_state:
-    st.session_state.prediction = None
+if "result" not in st.session_state:
+    st.session_state.result = ""
 
 
-# ================== HOME PAGE ==================
-if st.session_state.page == "Home":
+# ---------------- HOME PAGE ----------------
+def home():
 
-    st.markdown("<h1 style='text-align:center;'>💳 Online Payment Fraud Detection</h1>",
-                unsafe_allow_html=True)
+    st.title("💳 Online Payment Fraud Detection")
+    st.subheader("Machine Learning Based System")
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.write("---")
 
     st.write("""
-    Welcome to the Fraud Detection System.
-
-    This application predicts whether a transaction is:
-
-    ✅ Safe  
-    ⚠️ Fraudulent
+    This application predicts whether an online transaction 
+    is **Fraudulent** or **Safe** using Machine Learning.
     """)
 
-    st.info("Click below to start prediction")
+    st.write("### 📌 Features")
+    st.markdown("""
+    - Secure Prediction  
+    - Fast Processing  
+    - Easy Interface  
+    - Public Access  
+    """)
 
-    if st.button("🚀 Go to Predict"):
-        st.session_state.page = "Predict"
-        st.experimental_rerun()
+    if st.button("🚀 Start Prediction"):
+        st.session_state.page = "predict"
+        st.rerun()
 
 
-# ================== PREDICT PAGE ==================
-elif st.session_state.page == "Predict":
+# ---------------- PREDICT PAGE ----------------
+def predict():
 
-    st.markdown("<h2 style='text-align:center;'>🔍 Enter Transaction Details</h2>",
-                unsafe_allow_html=True)
+    st.title("📝 Enter Transaction Details")
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.write("---")
+
+    with st.form("prediction_form"):
+
+        step = st.number_input("Step", min_value=0.0)
+        type_t = st.number_input("Transaction Type (Encoded)", min_value=0.0)
+        amount = st.number_input("Amount", min_value=0.0)
+
+        oldOrg = st.number_input("Old Balance (Sender)", min_value=0.0)
+        newOrg = st.number_input("New Balance (Sender)", min_value=0.0)
+
+        oldDest = st.number_input("Old Balance (Receiver)", min_value=0.0)
+        newDest = st.number_input("New Balance (Receiver)", min_value=0.0)
+
+        isFlaggedFraud = st.number_input("Is Flagged Fraud (0 or 1)", min_value=0.0, max_value=1.0)
+
+        submit = st.form_submit_button("🔍 Predict")
+
+
+    if submit:
+
+        data = np.array([[
+
+            step,
+            type_t,
+            amount,
+            oldOrg,
+            newOrg,
+            oldDest,
+            newDest,
+            isFlaggedFraud
+
+        ]])
+
+        prediction = model.predict(data)[0]
+
+        if prediction == 1:
+            st.session_state.result = "⚠️ Fraud Transaction Detected!"
+        else:
+            st.session_state.result = "✅ Safe Transaction"
+
+        st.session_state.page = "result"
+        st.rerun()
+
+
+    if st.button("⬅ Back"):
+        st.session_state.page = "home"
+        st.rerun()
+
+
+# ---------------- RESULT PAGE ----------------
+def result():
+
+    st.title("📊 Prediction Result")
+
+    st.write("---")
+
+    if "Fraud" in st.session_state.result:
+        st.error(st.session_state.result)
+    else:
+        st.success(st.session_state.result)
+
+
+    st.write("### 🔁 What would you like to do next?")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        step = st.number_input("Step", min_value=0.0)
-        type_t = st.number_input("Transaction Type", min_value=0.0)
-        amount = st.number_input("Amount", min_value=0.0)
-        oldOrg = st.number_input("Old Balance (Sender)", min_value=0.0)
+        if st.button("🔄 New Prediction"):
+            st.session_state.page = "predict"
+            st.rerun()
 
     with col2:
-        newOrg = st.number_input("New Balance (Sender)", min_value=0.0)
-        oldDest = st.number_input("Old Balance (Receiver)", min_value=0.0)
-        newDest = st.number_input("New Balance (Receiver)", min_value=0.0)
-        isFlagged = st.number_input("Is Flagged Fraud (0 or 1)", min_value=0.0, max_value=1.0)
-
-    st.markdown("")
-
-    if st.button("🔎 Predict"):
-
-        data = np.array([[step, type_t, amount,
-                          oldOrg, newOrg,
-                          oldDest, newDest,
-                          isFlagged]])
-
-        pred = model.predict(data)[0]
-
-        st.session_state.prediction = pred
-        st.session_state.page = "Result"
-
-        st.experimental_rerun()
-
-    if st.button("⬅️ Back to Home"):
-        st.session_state.page = "Home"
-        st.experimental_rerun()
+        if st.button("🏠 Home"):
+            st.session_state.page = "home"
+            st.rerun()
 
 
-# ================== RESULT PAGE ==================
-elif st.session_state.page == "Result":
 
-    st.markdown("<h2 style='text-align:center;'>📊 Prediction Result</h2>",
-                unsafe_allow_html=True)
+# ---------------- ROUTING ----------------
+if st.session_state.page == "home":
+    home()
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+elif st.session_state.page == "predict":
+    predict()
 
-    if st.session_state.prediction == 1:
-        st.error("⚠️ Fraudulent Transaction Detected!")
-    else:
-        st.success("✅ Safe Transaction")
-
-    st.markdown("")
-
-    if st.button("🔁 Predict Again"):
-        st.session_state.page = "Predict"
-        st.experimental_rerun()
-
-    if st.button("🏠 Back to Home"):
-        st.session_state.page = "Home"
-        st.experimental_rerun()
+elif st.session_state.page == "result":
+    result()
