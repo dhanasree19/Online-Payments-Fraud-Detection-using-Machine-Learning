@@ -36,15 +36,8 @@ def home():
     is **Fraudulent** or **Safe** using Machine Learning.
     """)
 
-    st.write("### 📌 Features")
-    st.markdown("""
-    - Secure Prediction  
-    - Fast Processing  
-    - Easy Interface  
-    - Public Access  
-    """)
 
-    if st.button("🚀 Start Prediction"):
+    if st.button(" Start Prediction"):
         st.session_state.page = "predict"
         st.rerun()
 
