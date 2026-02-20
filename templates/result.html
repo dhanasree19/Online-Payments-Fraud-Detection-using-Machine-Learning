@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Prediction Result</title>
+
+
+<style>
+    body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:linear-gradient(135deg,#ff416c,#ff4b2b);
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+    .box{
+        width:420px;
+        padding:35px;
+        text-align:center;
+        background:white;
+        border-radius:12px;
+        box-shadow:0px 8px 25px rgba(0,0,0,0.3);
+    }
+
+    h2{
+        margin-bottom:10px;
+    }
+
+    .result{
+        font-size:22px;
+        font-weight:bold;
+        margin:20px 0;
+        color:#ff416c;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        margin-top:12px;
+        font-size:16px;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        background:#ff416c;
+        color:white;
+        transition:0.3s;
+    }
+
+    button:hover{
+        background:#c81d3f;
+    }
+
+    .home{
+        background:#555;
+    }
+
+    .home:hover{
+        background:#333;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="box">
+
+
+<h2>Prediction Result</h2>
+
+<div class="result">
+    {{ prediction }}
+</div>
+
+<a href="/index">
+    <button>New Prediction</button>
+</a>
+
+<a href="/">
+    <button class="home">Home</button>
+</a>
+
+
+</div>
+
+</body>
+</html>

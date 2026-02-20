@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Fraud Prediction</title>
+
+
+<style>
+    body{
+        margin:0;
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        background:linear-gradient(135deg,#11998e,#38ef7d);
+        font-family:Arial, Helvetica, sans-serif;
+    }
+
+    .box{
+        width:450px;
+        padding:30px;
+        background:white;
+        border-radius:12px;
+        box-shadow:0px 8px 25px rgba(0,0,0,0.3);
+    }
+
+    h3{
+        text-align:center;
+        margin-bottom:15px;
+    }
+
+    input{
+        width:100%;
+        padding:10px;
+        margin:8px 0;
+        border:1px solid #ccc;
+        border-radius:5px;
+    }
+
+    button{
+        width:100%;
+        padding:12px;
+        margin-top:12px;
+        background:#11998e;
+        color:white;
+        border:none;
+        border-radius:6px;
+        font-size:16px;
+        cursor:pointer;
+        transition:0.3s;
+    }
+
+    button:hover{
+        background:#0b7a70;
+    }
+
+    .back{
+        background:#555;
+    }
+
+    .back:hover{
+        background:#333;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="box">
+
+
+<h3>Enter Transaction Details</h3>
+
+<form action="/predict" method="post">
+
+    <input name="step" placeholder="Step (Time)" required>
+
+    <input name="type" placeholder="Transaction Type (Encoded)" required>
+
+    <input name="amount" placeholder="Amount" required>
+
+    <input name="oldbalanceOrg" placeholder="Old Balance Sender" required>
+
+    <input name="newbalanceOrig" placeholder="New Balance Sender" required>
+
+    <input name="oldbalanceDest" placeholder="Old Balance Receiver" required>
+
+    <input name="newbalanceDest" placeholder="New Balance Receiver" required>
+
+    <input name="isFlaggedFraud" placeholder="Flagged Fraud (0 or 1)" required>
+
+    <button type="submit">Predict Fraud</button>
+
+</form>
+
+<a href="/">
+    <button class="back">Back</button>
+</a>
+
+
+</div>
+
+</body>
+</html>
