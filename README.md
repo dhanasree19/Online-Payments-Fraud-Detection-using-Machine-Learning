@@ -1,17 +1,25 @@
 # Online-Payments-Fraud-Detection-using-Machine-Learning
 
-#Project Description
+
+Project Description
 
 The Online Payment Fraud Detection System is a machine learning–based web application developed to identify fraudulent online payment transactions. The system analyzes transaction details such as transaction type, amount, and account balance to classify transactions as Fraudulent or Legitimate.
 
-#Machine Learning Algorithms Used
+
+Problem Statement
+
+The rapid growth of online payment systems has increased the number of digital transactions, leading to a significant rise in fraudulent activities and unauthorized payments. Traditional fraud detection methods are unable to detect new fraud patterns efficiently and often fail to provide real-time protection.
+
+
+Machine Learning Algorithms Used
 
 Logistic Regression
 Decision Tree
 Random Forest 
 Support Vector Machine (SVM)
 
-#Libraries
+
+Libraries
 
 Pandas
 NumPy
@@ -19,7 +27,8 @@ Scikit-learn
 Matplotlib
 Seaborn
 
-#Dataset
+
+Dataset
 step 
 type (transaction type)
 amount
@@ -30,7 +39,8 @@ newbalanceDest
 isFraud
 isFlaggedFraud
 
-#Project Workflow
+
+Project Workflow
 
 Data Collection
 Data Preprocessing
